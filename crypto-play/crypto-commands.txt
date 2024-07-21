@@ -1,0 +1,218 @@
+Most Popular Cryptographic Commands (openssl, base64, urencode) 
+===============================================================
+
+
+=============================
+Base 64 Encoding and Decoding
+=============================
+
+    # Help 
+    base64 --help
+
+    # base64 Encoding. watch out for EOL (End Of Line) Char
+    # -n will not append a EOL
+    echo -n "This is a line" | base64
+
+    # base64 Decoding
+    echo -n VGhpcyBpcyBhIGxpbmU= | base64 -d
+
+    # base64 Encoding of file
+    # base64 -i dataimage.png
+    base64 -i dataimage.png > dataimage-base64.txt 
+
+    # Decoding 
+    # base64 -d dataimage-base64.txt > dataimage-decoded.png
+    base64 -i dataimage-base64.txt -d  > dataimage-decoded.png
+    
+
+============ 
+Url Encoding
+============
+    # sudo apt install gridsite-clients
+
+    # Help
+    urlencode
+
+    # Url Encode  
+    urlencode -m "http://mudra?user=test name"
+
+    # Url Decode
+    urlencode -d http%3A//mudra%3Fuser=test+name
+
+    # Use samltools
+
+
+================
+Hashing (Digest)
+================
+
+    # Help
+    openssl dgst -help
+
+    # Default digest sha256
+    openssl dgst dataimage.png
+
+    openssl dgst -sha512 dataimage.png
+    openssl dgst -sha512 -binary dataimage.png
+    openssl dgst -sha512 -binary -out dataimage-dgst dataimage.png  
+
+    # For Text data. watch out for EOL
+    echo -n xxx | openssl dgst -sha512
+
+    # Show again. Will hash to the same value. Danger
+    # Use of Hash in password
+
+    # Password.Default salt (show this twice)
+    openssl passwd -6
+
+    # own salt 
+    openssl passwd -6 -salt ThisIsASalt password
+
+====================
+Symmetric Encryption
+====================
+
+    # openssl enc for symmetric encryption and decryption 
+
+    # Help 
+    openssl enc -help 
+
+    # List of Ciphers
+    openssl enc -list
+
+    # AES encryption with secret hashed with SHA1. Salt is added automatically 
+    # -md Use digest sha1 to create key
+    echo -n "this is junk" |  openssl enc -aes-256-cbc -k secret -md sha1 -pbkdf2
+
+    # AES encryption with secret hashed with SHA1. Output is base64 encoded
+    echo -n "this is junk" |  openssl enc -aes-256-cbc -k secret -md sha1 -pbkdf2 -base64
+
+    # Encrypting a file
+    openssl enc -aes-256-cbc -k secret -md sha1 -base64 -pbkdf2 -in dataimage.png 
+
+    # Encrypting a file and then save to outout file
+    openssl enc -aes-256-cbc -k secret -md sha1 -base64 -pbkdf2 -in dataimage.png -out dataimage-enc
+
+    # Decrypting an encrypted data. Make sure size is same 
+    openssl enc -d -aes-256-cbc -k secret -md sha1 -base64 -pbkdf2 -in dataimage-enc -out dataimage-original.png
+
+
+==================================
+Asymmetric Encryption & Decryption
+==================================
+    # Create a certificate request 
+    # Create a private key and self signed certificate
+    # -days 3650 (the certificate has 1 year until it expires)
+    # -keyout private.key (the private key)
+    # -out certificate.crt (the certificate)
+    # -nodes - dont encrypt the private key
+    # -newkey rsa:2048 
+    # Why sha256 ? Because we are signing the certificate, we need to specify which digest algorithm to use for that because signing would involve hashing as the first step.
+    openssl req -x509 -nodes -sha256 -days 3650 -newkey rsa:2048 -keyout private.key -out certificate.crt
+
+    # the command above will generate two files
+    # private.key
+    # certificate.crt - the public certificate, the public certificate contains the public key, which is basically self-signed
+
+    # openssl genrsa
+    # generates a RSA private key 
+
+    # Help
+    openssl genrsa -help
+
+    # Create a RSA private key of size 2048
+    openssl genrsa -out alice-private.pem 2048
+    openssl genrsa -out bob-private.pem 2048
+
+    # Encrypted. it will ask for secret 
+    openssl genrsa -aes256 -out private_enc.pem 2048 // encrypt using AES256
+
+    # Create public key
+    # will ask for secret if encrypted
+    openssl rsa -in alice-private.pem -pubout -out alice-public.pem
+    openssl rsa -in bob-private.pem -pubout -out bob-public.pem
+   
+    # The pkeyutl command can be used to perform low-level public key operations using any 
+    # supported algorithm.
+    # encrypted using rsa
+    echo "Run for your life Now!" > important.txt
+
+    # Alice wants to send to bob. So encrypt using bob's public key 
+    openssl pkeyutl -encrypt -pubin -inkey bob-public.pem -in important.txt -out important.enc
+
+    # if important.txt is > key size we will have issue
+
+    # Bob will decrypt it using his private key
+    openssl pkeyutl -decrypt -inkey bob-private.pem -in important.enc
+
+
+================================    
+Hybrid Encryption and Decryption 
+================================
+
+    # Generate a passphrase key. See num bytes is little less than 256 
+    openssl rand -out passphrase.key 245
+
+    # AES Encrypt Large data using generated passphrase
+    openssl enc -aes-256-cbc -kfile passphrase.key -md sha1 -base64 -pbkdf2 -in dataimage.png -out dataimage-aes
+
+    # RSA Encrypt the passphrase 
+    openssl pkeyutl -encrypt -pubin -inkey bob-public.pem -in passphrase.key -out passphrase_enc.key
+
+    # Send the dataimage-aes and passphrase_enc.key across
+
+    # Bob RSA Decrypts the passphrase
+    openssl pkeyutl -decrypt -inkey bob-private.pem -in passphrase_enc.key -out passphrase.key
+
+    # Bob will AES Decrypt the data using the passphrase
+    openssl enc -d -aes-256-cbc -kfile passphrase.key -md sha1 -base64 -pbkdf2 -in dataimage-aes -out dataimage_original.png
+
+
+===========================================
+Signing & Verification (Using openssl dgst)
+===========================================
+
+    # Create a sha512 digest from dataimage.png, signs that digest with Alice's private key
+    # and outputs to dataimage-digest.sign
+    openssl dgst -sha512 -sign alice-private.pem -out dataimage-digest.sign dataimage.png
+
+    # Create base64 representation of dataimage-digest.sign
+    ase64 -i dataimage-digest.sign > dataimage-digest.sign.base64 
+
+    # Create base64 representation of dataimage.png
+    base64 -i dataimage.png > dataimage.png.base64
+
+    # Alice will send both dataimage.png.base64 and dataimage-digest.sign.base64 to Bob 
+
+    # Bob will recover dataimage.png
+    base64 -d -i dataimage.png.base64 > dataimage.png.orig
+
+    # Bob will recover dataimage-digest.sign
+    base64 -d -i dataimage-digest.sign.base64 > dataimage-digest.sign.orig
+
+    # Bob will verify signature using Alice's public key
+    openssl dgst -sha512 -verify alice-public.pem -signature dataimage-digest.sign.orig dataimage.png.orig
+
+
+
+==============================================
+Signing & Verification (Using openssl pkeyutl)
+==============================================
+
+    # Take a sha512 hash of the dataimage.png 
+    openssl dgst -sha512 -binary -out dataimage-digest dataimage.png 
+
+    # Alice will Sign the Hash using her private key 
+    openssl pkeyutl -sign -inkey alice-private.pem -in dataimage-digest -out dataimage-digest.sign
+
+    # Not shown : Alice will base 64 encode both Signature and Original Data
+    # Not shown : Bob will base 64 decode both Signature and Original Data
+
+    # Bob will verify signature using Alice's public key
+    openssl pkeyutl -verify -pubin -inkey alice-public.pem -in dataimage-digest -sigfile dataimage-digest.sign
+
+
+
+
+
+
