@@ -115,7 +115,7 @@ This will be covered in detail in future lectures.
 
 
 
-#### Types oc Client
+#### Types of Clients
 * Confidential Client - Client that resides on the server. For example a java application running on a tomcat
 * Public Client - These clients run on an insecure environment like a browser (Ajax applications, SPA, Smartphone)
 
