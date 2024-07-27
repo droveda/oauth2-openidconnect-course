@@ -3,6 +3,7 @@
 ## Client Registration
 
 ### LAB
+* https://developers.google.com/photos
 * https://developers.google.com/photos/library/guides/get-started
 * Login to the API console and Create a new Project. Example: "My Google Photos Project"
 * Search for Google Photos API, Select it and click the Blue Button "ENABLE"
