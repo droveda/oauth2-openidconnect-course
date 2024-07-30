@@ -214,5 +214,6 @@ Signing & Verification (Using openssl pkeyutl)
 
 
 
-
+### This command creates a 2048-bit private key (domain.key) and a self-signed certificate (domain.crt) from scratch:
+openssl req -newkey rsa:2048 -nodes -keyout domain.key -x509 -days 365 -out domain.crt
 
