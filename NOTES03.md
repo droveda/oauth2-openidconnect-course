@@ -33,7 +33,7 @@ The OAuth 2.0 authorization framework enables a **third-party application** to o
   * Many on the internet
   * OAuth Endpoints
 
-A Resource Owner should never send the password to the Third Party (untrusted) Application  
+A Resource Owner should never send the password to the Third Party (untrusted) Applications    
 
 
 ### Oauth 2.0 - Client Registration
@@ -73,7 +73,7 @@ Other verifications are also done - Expiry Time, Issuer validation, etc...
 ### Oauth 2.0 - OAuth Scopes
 A Scope is just a string. Think about it as an application role.  
 In enterprise applications we typically do not explicity authorize an application to make an api call on our behalf.  
-IN enterprise applications - the client, the resource server and Authorization server are all usually controlled by the same company and there is really no notion of a Third Party application as such. Users are typically associated in active directory with groups, so what we really need is automatic authorizations to take place and the scopes to be set automatically based on the user Active Directory roles.
+In enterprise applications - the client, the resource server and Authorization server are all usually controlled by the same company and there is really no notion of a Third Party application as such. Users are typically associated in active directory with groups, so what we really need is automatic authorizations to take place and the scopes to be set automatically based on the user Active Directory roles.
 
 ![Hybrid Encryption](/images/scopes01.png)  
 
@@ -108,7 +108,7 @@ This will be covered in detail in future lectures.
   * Access tokens are valid for a certain ammount for time, for example 60 minutes
   * When we get the access token, we can also get a refresh token along with that.
   * The refresh token usually has a much higher timeout setting, in fact in Google it never expires.
-  * The client can then use the refresh token to get a new access token so basically the client will make another call to tje Authorization server where the **grant type is refresh token** and the parameters would be the **expired access token** and the **refresh token** techinically it is a separate grant type, but it is mostly used in conjunction with an Authorization code grant or the Resource Owner password credentials grant.
+  * The client can then use the refresh token to get a new access token so basically the client will make another call to th  e Authorization server where the **grant type is refresh token** and the parameters would be the **expired access token** and the **refresh token** techinically it is a separate grant type, but it is mostly used in conjunction with an Authorization code grant or the Resource Owner password credentials grant.
   * ![Hybrid Encryption](/images/refresh-token.png)
 * **Token Revocation**
   * ![Hybrid Encryption](/images/token-revogation.png)
@@ -121,17 +121,17 @@ This will be covered in detail in future lectures.
 
 
 #### Notes and questions
-1. Q: Why the Authorization Server when it redirects why does it not redirect directly the access token? Why do we have to make a separate call to get an access Token?
+1. Q: Why the Authorization Server when it redirects, why does it not redirect directly the access token? Why do we have to make a separate call to get an access Token?
    1. A: The reason for this is that we do not want to expose the access token on the front-end side. We don't want to expose it on the front channel. It should always remain on the back channel as much as possible.
    2. A: The auth code is valid for a few minutes and it needs to be exchanged for an access token. So even if the auth code is compromised it really still requires a client identifier and a client secret to get an access token. So without that you cannot get an access token. But if you were to send an access token using the front channel through the browser as a redirect then the access token cloud be stolen and then the access token can be used by anybody to gain access. So this is the reason why the proccess is broken into two parts - one to get the auth code and the second to actually get the access token.
 
 
 ### Open ID Connect Scopes
-The oauth access token have minimal information, minimal information about the user, for example in a JWT token there us the **sub** subject field, which can contains for instance an user email.  
-The JWT is small and contains eniugh information for verification of the token, and that's how it should be, because this access token will be sent as part of every API request and we want this to be as small as possible. The OAuth 2.0 specification does a good job of that.  
+The oauth access token have minimal information, minimal information about the user, for example in a JWT token there is the **sub** subject field, which can contains for instance an user email.  
+The JWT is small and contains enough information for verification of the token, and that's how it should be, because this access token will be sent as part of every API request and we want this to be as small as possible. The OAuth 2.0 specification does a good job of that.  
 OpenID Connect fill the gap, in order to get more information of the user, for instance User name, lastname, department, photo, etc...  
 OpenID Connect defines a set of scopes that can be used to retrieve the user information after the user gets authenticated.  
-OpenID Scopres are built-in scopes which allow the client to get information about the user and by the way the user would have to still authorize these as well  
+OpenID Scopes are built-in scopes which allow the client to get information about the user and by the way the user would have to still authorize these as well  
 The Client will have to specify the OpenID specifc scopes when asking for the token. The OpenID scopes are openid, profile, email, address and phone.  
 The Authorization server will return an access token as well as an **OpenID ID Token** which contains user information. If you specify openid as a scope, the client can also call the user information that is the user info  
 

@@ -49,7 +49,7 @@ The site above you can use it in order to search the scopes for the google APIs
    5. scope=openid%20profile%20email%20https://www.googleapis.com/auth/photoslibrary.readonly
    6. state=state123
    7. redirect_uri=http://localhost:8080
-   8. access_type=offline (this one if for getting the refresh token as well)
+   8. access_type=offline (this one is for getting the refresh token as well)
    9. prompt=consent (This means users have to explicitly approve the authorize request after entering credentials)
    10. the entire URI = https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=<my-client-id>&scope=openid%20profile%20email%20https://www.googleapis.com/auth/photoslibrary.readonly&state=state123&redirect_uri=http://localhost:8080&access_type=offline&prompt=consent
    11. start a python HTTP server, to catch the redirect URL: (You need to start a local server on port 8080, in order to the redirect URI work properly)
@@ -101,7 +101,7 @@ The site above you can use it in order to search the scopes for the google APIs
 ### Deev Dive : Authorization Code Grant Type - Part 2
 POST https://www.googleapis.com/oauth2/v1/tokeninfo  
 ```
-//this if for token verification
+//this is for token verification
 curl --location 'https://www.googleapis.com/oauth2/v1/tokeninfo' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'access_token=<my-access-token>'
@@ -109,10 +109,10 @@ curl --location 'https://www.googleapis.com/oauth2/v1/tokeninfo' \
 
 #### Refresh Token
 POST https://oauth2.googleapis.com/token  
-grant_type  
-client_id  
-client_secret  
-refresh_token  
+grant_type  = refresh_token  
+client_id  = my-client-id  
+client_secret  = my-client-secret  
+refresh_token  = the-refresh-token  
 
 ```
 curl --location 'https://oauth2.googleapis.com/token' \
@@ -131,22 +131,22 @@ GET https://openidconnect.googleapis.com/v1/userinfo
 Auth Header  
 ```
 curl --location 'https://openidconnect.googleapis.com/v1/userinfo' \
---header 'Authorization: Bearer <mt-access-token>'
+--header 'Authorization: Bearer <my-access-token>'
 ```
 
 #### Explanation about JWT Token
-It is compouded by three parts, separated by a **'.'** character  
+It is composed by three parts, separated by a **'.'** character  
 1. Header
    1. alg: RS256, is the signing algorithm
-   2. kid: key id, kid is reference to the signing key used to sign the token
+   2. kid: key id, kid is the reference to the signing key used to sign the token
    3. type: JWT
-2. Payload, cantains the information
+2. Payload, contains the information
 3. Signature
    1. RSASHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), PUBLIC_KEY)
 
 ![Hybrid Encryption](/images/jwt.png)  
 
-#### JWKS Endpoint
+### JWKS Endpoint
 **Json Web Key Set** endpoint **JWKS** comes into the picture, because every Authorization server has an endpoint which tells us that are all the keys which are used for signing the access tokens. So how do I find out where this endpoint is? Again we go back to the openid configuration  
 
 The site followed field 'iss' in payload to get the Discovery EP. Applications should not do this.  
@@ -178,11 +178,11 @@ Here is how the PKCE flow works:
 
 ### LAB PKCE
 code_verifier = This is a dumb verifier (In real world scenarios, the code_verifier must be much londer and generated dynamically for each authorize request)  
-https://tonyxu-io.github.io/pkce-generator/ (To generate code verifier)  
+https://tonyxu-io.github.io/pkce-generator (To generate code verifier)  
 
-zITebWK05T68nkfq8mohZWoIDs7ZprbPer3rE0dHkVk
+usdhsdskajsdksdjaskdjsakdjsak
 
-GET https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=<my-client-id>&scope=openid%20https://www.googleapis.com/auth/photoslibrary.readonly&state=state123&redirect_uri=http://localhost:8080&code_challenge=zITebWK05T68nkfq8mohZWoIDs7ZprbPer3rE0dHkVk&code_challenge_method=S256  
+GET https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=<my-client-id>&scope=openid%20https://www.googleapis.com/auth/photoslibrary.readonly&state=state123&redirect_uri=http://localhost:8080&code_challenge=usdhsdskajsdksdjaskdjsakdjsak&code_challenge_method=S256  
 
 **python3 -m http.server 8080**  
 
@@ -209,18 +209,18 @@ See project "my-photos-client-3.3.zip", albums-client
 ```
 <dependency>
     <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-oauth2-client</artifactId>
+    <artifactId>spring-boot-starter-oauth2-client</artifactId> <!-- oauth2 client -->
 </dependency>
 <dependency>
     <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-security</artifactId>
+    <artifactId>spring-boot-starter-security</artifactId> <!-- this is for the spring security jar files -->
 </dependency>
 <dependency>
     <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId> <!-- this is for the spring security jar files>
+    <artifactId>spring-boot-starter-web</artifactId> 
 </dependency>
 ```
-Now, one good thing about the spring security is that once we include the oauth2 client as dependency in the maven, the entire application is set up as oauth2 client. Whenever any user accesses any of the client url the OAuth flow automatically gets initiated based om the setting in the Spring Boot application.properties. There are ways to set security configuration but we have the default setup.  
+Now, one good thing about the spring security is that once we include the oauth2 client as dependency in the maven, the entire application is set up as oauth2 client. Whenever any user accesses any of the client url the OAuth flow automatically gets initiated based on the setting in the Spring Boot application.properties. There are ways to set security configuration but we have the default setup.  
 The default setup protects all urls of the Application.  
 
 ---
@@ -231,7 +231,7 @@ An application can make use of **OAuth2AuthenticationToken**, to retrieve the us
 ```
 
 In practice, Spring Security can handle **GLobal Logout** as well. However, Google does not follow the global logout specifications - so I created this logout method to be compliant witj both Okta and Google.  
-Also note that the downloaded code versil includes a post logout url so the Authorization Server will redirect back to the application after sucessful logout.  
+Also note that the downloaded code version includes a post logout url so the Authorization Server will redirect back to the application after sucessful logout.  
 It is also a good idea to revoke the access token and refresh token.  
 
 **Note very important**: http://localhost:8080/login/oauth2/code/google (Use this redirect URI for the spring-boot demo) 
