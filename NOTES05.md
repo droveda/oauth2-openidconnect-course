@@ -21,3 +21,49 @@ Okta updates the User Interface of the Developer Console regularly. If there are
 
 ## Okta Setup and Endpoints
 https://dev-<my-account>.okta.com/oauth2/default/.well-known/openid-configuration
+
+## Deep Dive - Client Credentials Grant Type
+* See how to and documentation [here](FakeBookAPI-Resource-Server-setup.md)
+* POST - https://dev-29895772.okta.com/oauth2/default/v1/token
+  * grant_type = client_credentials
+  * client_id = my-clienti-d
+  * client_secret = my-client-secret
+  * scope = fakebookapi.read fakebookapi.admin
+```
+curl --location 'https://dev-29895772.okta.com/oauth2/default/v1/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--header 'Cookie: JSESSIONID=9E4181349A7FDDBBDF979534BEDEEA59' \
+--data-urlencode 'grant_type=client_credentials' \
+--data-urlencode 'client_id=<my-client-id>' \
+--data-urlencode 'client_secret=<my-client-secret>' \
+--data-urlencode 'scope=fakebookapi.read'
+```
+
+```
+# using the bearer access_token returned by the previous curl command
+curl --location 'http://localhost:8080/books' \
+--header 'Authorization: Bearer <my-access-token>'
+```
+
+```
+curl --location 'http://localhost:8080/books' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <my-access-token>' \
+--data '{
+    "id": 6,
+    "title": "My book",
+    "author": "Droveda",
+    "cost": 7.99,
+    "numPages": 260
+}'
+```
+
+```
+# Instropect the token call
+curl --location 'https://dev-29895772.okta.com/oauth2/default/v1/introspect' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--header 'Cookie: JSESSIONID=A9F4E80113AA004F756865491D003F72' \
+--data-urlencode 'client_id=<my-client-id>' \
+--data-urlencode 'client_secret=<my-client-secret>' \
+--data-urlencode 'token=<my-access-token>'
+```

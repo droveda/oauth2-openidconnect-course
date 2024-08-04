@@ -1,0 +1,33 @@
+Instructions on running FakeBook API from Windows/Linux/Mac
+=================================================================
+
+Assumptions:
+    - You have a Okta Developer account. Find out your OKTA ISSUER URI
+    - You have setup scopes fakebookapi.read and fakebookapi.admin in 
+      your Okta Developer Console as mentioned in "Okta setup"
+
+Steps: 
+
+1. Install lates JDK from the following Site (Tested with JDK 21)
+
+    https://jdk.java.net/
+    
+
+2. Install Maven from the following site
+    
+    https://maven.apache.org/install.html
+    
+
+3. Set the following property correctly
+
+    File Location : okta-fakebookapi\src\main\resources\application.properties
+
+    spring.security.oauth2.resourceserver.jwt.jwk-set-uri: <PLACE OKTA ISSUER URL HERE FROM OKTA CONSOLE>/v1/keys
+    
+
+4. To run the FakeBook API Resource Server on port 8080
+
+    mvn spring-boot:run 
+
+
+5. You can now use Postman (or any other tool) to send HTTP Requests to the FakeBook API
