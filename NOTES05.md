@@ -20,4 +20,4 @@ Okta's signup screen has changed for https://developer.okta.com/signup/ after Ok
 Okta updates the User Interface of the Developer Console regularly. If there are major changes, I re-record the lectures to reflect the changed User Interface and in doing so in some cases you will see that the **Client ID** and **Client Secret** from the Okta UI videos may not exactly match the **Postman** lectures. If the UI changes are not major, then I will not record the video. I expect you to take this into account.  
 
 ## Okta Setup and Endpoints
-https://dev-<mt-account>.okta.com/oauth2/default/.well-known/openid-configuration
+https://dev-<my-account>.okta.com/oauth2/default/.well-known/openid-configuration
