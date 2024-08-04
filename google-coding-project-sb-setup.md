@@ -14,7 +14,7 @@
 
 
 ## Instructions to set up My Photos Client with Google Authorization Server
-* Download the my-photos-client-3.3.zip (Spring Boot 3.3.x) file from lecture "Google Coding Project : Code Walkthrough". There is also a my-photos-client-2.7.zip which uses Spring Boot 2.7.x but I recommend that you use Spring Boot 3.3.x
+* Download the **my-photos-client-3.3.zip** (Spring Boot 3.3.x) file from lecture "Google Coding Project : Code Walkthrough". There is also a my-photos-client-2.7.zip which uses Spring Boot 2.7.x but I recommend that you use Spring Boot 3.3.x
 * Unzip the zip file in your local directory 
 * Change to [local directory]/albums-client 
 * Open the file how-to-use.txt for instructions on project setup 
@@ -23,10 +23,12 @@
   * Make sure that the following configuration property is set to 'google' in albums-client project.
   * File Location : albums-client\src\main\resources\application.properties
   * Set the following two properties by creating a client id and secret in the Google Developer Console as mentioned in the lectures. Also see instructions at the top.
-    * File Location : albums-client\src\main\resources\application-google.properties <clitn-id> <client-secret>
+    * File Location : albums-client\src\main\resources\application-google.properties <client-id> <client-secret>
   * Note : Make sure you downloaded JDK 21 (Update as needed)
-  * To compile, package and run the My Photos Client at port 8080 - mvn spring-boot:run
-  * After this, you should be able to access the My Photos Client as - http://localhost:8080
+  * To compile, package and run the My Photos Client at port 8080 
+    * ```mvn spring-boot:run```
+  * After this, you should be able to access the My Photos Client as 
+    * ```http://localhost:8080```
 
 
 ## OAuth 2.0 with Google APIs
