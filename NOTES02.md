@@ -11,8 +11,8 @@
 
 ## Security Basics - Providers
 * User, Identity
-  * where are the user credentials store?
-  * Is is typacally stored in a data store, like LDAP or it might even be a database.
+  * where are the user credentials stored?
+  * Is is typically stored in a data store, like LDAP or it might even be a database.
   * An example of LDAP could be Active Directory which is used in Microsoft Data centers
 * Authentication
   * Who does this IdP

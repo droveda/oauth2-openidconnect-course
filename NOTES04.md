@@ -10,7 +10,7 @@
 * Search for Google Photos API, Select it and click the Blue Button "ENABLE"
 * Click on the Sandwich button, APIs & Services -> Click on CREDENTIALS
   * Click on CREATE CREDENTIALS, Select type = OAuth Cliend ID
-    * Click on "Configure Conset Screen"
+    * Click on "Configure Consent Screen"
       * User Type = External, click on "CREATE"
         * App Name = "My Google Photos Reader"
         * Email Support = My Email
@@ -45,13 +45,13 @@ The site above you can use it in order to search the scopes for the google APIs
    1. endpoint = https://accounts.google.com/o/oauth2/v2/auth
    2. http type = GET
    3. response_type=code
-   4. client_id=<my-client-id>
+   4. client_id=```<my-client-id>```
    5. scope=openid%20profile%20email%20https://www.googleapis.com/auth/photoslibrary.readonly
    6. state=state123
    7. redirect_uri=http://localhost:8080
    8. access_type=offline (this one is for getting the refresh token as well)
    9. prompt=consent (This means users have to explicitly approve the authorize request after entering credentials)
-   10. the entire URI = https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=<my-client-id>&scope=openid%20profile%20email%20https://www.googleapis.com/auth/photoslibrary.readonly&state=state123&redirect_uri=http://localhost:8080&access_type=offline&prompt=consent
+   10. the entire URI = https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=```<my-client-id>```&scope=openid%20profile%20email%20https://www.googleapis.com/auth/photoslibrary.readonly&state=state123&redirect_uri=http://localhost:8080&access_type=offline&prompt=consent
    11. start a python HTTP server, to catch the redirect URL: (You need to start a local server on port 8080, in order to the redirect URI work properly)
        1.  **python3 -m http.server 8080**
    12. Paste the URI in a browser
@@ -119,11 +119,11 @@ curl --location 'https://oauth2.googleapis.com/token' \
 --header 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode 'grant_type=refresh_token' \
 --data-urlencode 'client_id=<my-client-id>' \
---data-urlencode 'client_secret=<my-clint-secret>' \
+--data-urlencode 'client_secret=<my-client-secret>' \
 --data-urlencode 'refresh_token=<the-refresh-token>'
 ```
 
-The reason it's called Bearer token is that whoever holds the token can access the API it's almost like this token is like your credentials it's like a user id and password. It's very sensitive so for some reason that gets hacked and your access token is leaked then that access token can be used by the hacker to get into the api. So it is very sensitive and that's exactly why this is a POST request and that's why the validity of the access token must be very short.  
+The reason it's called Bearer token is that whoever holds the token can access the API it's almost like this token is like your credentials it's like a user id and password. It's very sensitive, so for some reason that gets hacked and your access token is leaked then that access token can be used by the hacker to get into the api. So it is very sensitive and that's exactly why this is a POST request and that's why the validity of the access token must be very short.  
 
 #### Send User Info Request
 This is used by the Client only if access token has openid scope  
@@ -230,7 +230,7 @@ An application can make use of **OAuth2AuthenticationToken**, to retrieve the us
   OAuth2User principal = oAuth2AuthenticationToken.getPrincipal();
 ```
 
-In practice, Spring Security can handle **GLobal Logout** as well. However, Google does not follow the global logout specifications - so I created this logout method to be compliant witj both Okta and Google.  
+In practice, Spring Security can handle **GLobal Logout** as well. However, Google does not follow the global logout specifications - so I created this logout method to be compliant with both Okta and Google.  
 Also note that the downloaded code version includes a post logout url so the Authorization Server will redirect back to the application after sucessful logout.  
 It is also a good idea to revoke the access token and refresh token.  
 

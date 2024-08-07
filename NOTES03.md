@@ -108,7 +108,7 @@ This will be covered in detail in future lectures.
   * Access tokens are valid for a certain ammount for time, for example 60 minutes
   * When we get the access token, we can also get a refresh token along with that.
   * The refresh token usually has a much higher timeout setting, in fact in Google it never expires.
-  * The client can then use the refresh token to get a new access token so basically the client will make another call to th  e Authorization server where the **grant type is refresh token** and the parameters would be the **expired access token** and the **refresh token** techinically it is a separate grant type, but it is mostly used in conjunction with an Authorization code grant or the Resource Owner password credentials grant.
+  * The client can then use the refresh token to get a new access token so basically the client will make another call to th  e Authorization server where the **grant type is refresh token** and the parameters would be the **expired access token** and the **refresh token** technically it is a separate grant type, but it is mostly used in conjunction with an Authorization code grant or the Resource Owner password credentials grant.
   * ![Hybrid Encryption](/images/refresh-token.png)
 * **Token Revocation**
   * ![Hybrid Encryption](/images/token-revogation.png)

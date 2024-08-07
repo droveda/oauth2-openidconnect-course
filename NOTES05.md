@@ -1,6 +1,6 @@
 # Oauth 2.0 - Using Okta
 
-We would have to use an enterprise grade Authorization server. There are lots of open source Authorization servers which an enterprise can use like **cloud foundry UUA**, **key cloak** etc, and it's not the intation of this course to recommend one over the other. 
+We would have to use an enterprise grade Authorization server. There are lots of open source Authorization servers which an enterprise can use like **cloud foundry UUA**, **key cloak** etc, and it's not the intention of this course to recommend one over the other. 
   
 I wanted to chosse an Authorization server which is enterprise-grade and useful for learning but at the same time also deployed in the cloud so that I don't have to deploy that locally. Okta fits that bill perfectly.  
   
@@ -17,16 +17,16 @@ Okta's signup screen has changed for https://developer.okta.com/signup/ after Ok
 * Alternatively, you can use your personal **Google** or **Github** account to sign up
 * Login using your user and from this point everything is the same
 
-Okta updates the User Interface of the Developer Console regularly. If there are major changes, I re-record the lectures to reflect the changed User Interface and in doing so in some cases you will see that the **Client ID** and **Client Secret** from the Okta UI videos may not exactly match the **Postman** lectures. If the UI changes are not major, then I will not record the video. I expect you to take this into account.  
+Okta updates the User Interface of the Developer Console regularly. If there are major changes, I re-record the lectures to reflect the changed User Interface and im doing so in some cases you will see that the **Client ID** and **Client Secret** from the Okta UI videos may not exactly match the **Postman** lectures. If the UI changes are not major, then I will not record the video. I expect you to take this into account.  
 
 ## Okta Setup and Endpoints
-https://dev-<my-account>.okta.com/oauth2/default/.well-known/openid-configuration
+https://dev-```<my-account>```.okta.com/oauth2/default/.well-known/openid-configuration
 
 ## Deep Dive - Client Credentials Grant Type
 * See how to and documentation [here](FakeBookAPI-Resource-Server-setup.md)
 * POST - https://dev-29895772.okta.com/oauth2/default/v1/token
   * grant_type = client_credentials
-  * client_id = my-clienti-d
+  * client_id = my-client-id
   * client_secret = my-client-secret
   * scope = fakebookapi.read fakebookapi.admin
 ```
@@ -36,7 +36,7 @@ curl --location 'https://dev-29895772.okta.com/oauth2/default/v1/token' \
 --data-urlencode 'grant_type=client_credentials' \
 --data-urlencode 'client_id=<my-client-id>' \
 --data-urlencode 'client_secret=<my-client-secret>' \
---data-urlencode 'scope=fakebookapi.read'
+--data-urlencode 'scope=fakebookapi.read fakebookapi.admin'
 ```
 
 ```
