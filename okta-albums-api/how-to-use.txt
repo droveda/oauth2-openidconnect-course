@@ -1,0 +1,32 @@
+Instructions on running "My Photos Resource API" from Windows/Linux/Mac
+=======================================================================
+
+Assumptions:
+    - You have a Okta Developer account. Find out your OKTA ISSUER URI
+    - You have setup scope photolibrary.read in your Okta Developer Console as mentioned in "Okta Coding Project : Code Walkthrough"
+
+Steps: 
+
+1. Install latest JDK from the following Site below (Tested with JDK 21)
+
+    https://jdk.java.net/
+    
+
+2. Install Maven from the following site
+    
+    https://maven.apache.org/install.html
+    
+
+3. Set the following property
+
+    File Location : okta-albums-api\src\main\resources\application.properties
+
+    spring.security.oauth2.resourceserver.jwt.jwk-set-uri: <PLACE OKTA ISSUER URL HERE FROM OKTA CONSOLE>/v1/keys
+    
+
+4. To run the "My Photos Resource API" on port 8081
+
+    mvn spring-boot:run 
+
+
+5. You can now use Postman or albums-client to send HTTP Requests to the "My Photos Resource API"

@@ -67,3 +67,7 @@ curl --location 'https://dev-29895772.okta.com/oauth2/default/v1/introspect' \
 --data-urlencode 'client_secret=<my-client-secret>' \
 --data-urlencode 'token=<my-access-token>'
 ```
+
+
+### Authorization Type Basic
+![Authorization Basic](/images/authorization-basic.png)
