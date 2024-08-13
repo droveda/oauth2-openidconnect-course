@@ -25,3 +25,6 @@
     * For Okta, you would also have to run the My Photos Resource API at port 8081
 
 
+* What precautions should you take when writing a Single Page Application ? 
+  * Use Authorization Code Grant with PKCE and store the access token in a safe place
+  * This is the best option because the access token is less likely to fall into the hands of a hacker. Also, the access token should be kept in a safe place like Session Storage. 
