@@ -54,13 +54,13 @@ OAuth 2.0 - User association to Groups
 ## OAuth 2.0 and OpenID Connect
 * OAuth 2.0 is for Authorization
   * Access token shloud contain only authorization information
-  * Scopres, Roles, Grant Types, Flows, Tokens
+  * Scopes, Roles, Grant Types, Flows, Tokens
   * No ID Token
   * https://tools.ietf.org/html/rfc6749
 * OpenID Connect is the Identity layer on top of OAuth 2.0
   * ID Token contains user claims
   * /userinfo endpoint
-  * Scopres : openid profile email
+  * Scopes : openid profile email
   * Can create custom claims
   * Adds more Response types
   * https://openid.net/specs/openid-connect-core-1_0.html

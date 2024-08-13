@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Used for header */
+.album-header {
+	background-color: #2061a8;
+	color: #e8e3e3;
+	padding: 10px;
+}
+
+/* Used for Album and Photo Card */
+.album-card {
+	width: 250px;
+	height: 250px;
+	object-fit: cover;
+}
+

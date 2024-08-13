@@ -1,0 +1,36 @@
+<div class="container-fluid">
+  <div class="row" *ngIf="response">
+
+    <!-- Shows a breadcrumb. Use that to go back -->
+    <div class="row">
+      <nav class="m-2">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+          <li class="breadcrumb-item">
+            <a routerLink="/albums">All Albums</a>
+          </li>
+          <li class="breadcrumb-item active">Photos</li>
+        </ol>
+      </nav>
+    </div>
+
+    <!--
+      Each Photo of the album is shown as a card
+      IMPORTANT : Show only if 'response' is available
+    -->
+    <div class="row" *ngIf="response">
+      <div class="d-flex p-1" *ngFor="let photo of response.mediaItems">
+        <div class="card">
+          <img [src]="photo.baseUrl" class="card-img-top album-card" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+     IMPORTANT : Show only if 'error' is available
+  -->
+  <div class="row alert alert-danger" *ngIf="error">
+    {{ error.message }}
+  </div>
+</div>

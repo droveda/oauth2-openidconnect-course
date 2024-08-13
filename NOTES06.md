@@ -2,7 +2,7 @@
 
 * What's in the JWT?
 * Client Authentication methods
-  * Until now we have used client secret as a mechanism for client authentication, and it's by far the most widly used client authentication mechanism. However, it may not actually be the most secure mechanism for all scenarios. Okta has made some changes to include public keyprivate key as part of the client authentication **(TODO test this with Azure Microsoft Entra ID)**
+  * Until now we have used client secret as a mechanism for client authentication, and it's by far the most widly used client authentication mechanism. However, it may not actually be the most secure mechanism for all scenarios. Okta has made some changes to include public key private key as part of the client authentication **(TODO test this with Azure Microsoft Entra ID)**
 * Other Titbits
 
 ## JWT
@@ -10,7 +10,7 @@
 
 * Structure:
   * {encoded header}.{encoded payload}.{encoded signature}
-  * How it is created? The autorization knows who the resource owner is, basically yhe user on the system, and it can pull up all the properties of the resosurce owner - like the subject, the scopes, the email, etc... For constructing the ID token there will be a lot more information needed, like fistName, lastName, email.
+  * How it is created? The autorization knows who the resource owner is, basically the user on the system, and it can pull up all the properties of the resource owner - like the subject, the scopes, the email, etc... For constructing the ID token there will be a lot more information needed, like fistName, lastName, email.
     * First it will create the header and payload JSON objects from all the information that it has.
       * ```alg: RS256``` this property in the header tells that the JWT will be signed using the RSA256 algorithm
     * Next is does the Base64 URL Encoded, Base64 is to make sure that any binary data is converted to text and URL encoding to make sure that the access token can be sent as part of the URL.
@@ -32,7 +32,7 @@
     "ES512"
   ]
 
-  // explanation if the different types of signing algorithm 
+  // explanation of the different types of signing algorithm 
   HS => HMAC with SHA-NNN (Use Secret Key)
   RS => RSA with SHA-NNN (Use Public/Private Key)
   ES => ECDSA with SHA-NNN (Use Public/Private Key) (Eliptical curve digital signature algorithm)
@@ -49,8 +49,8 @@
 
 
 ## Client Authentication
-In all of our demos and projects, there was client authentication going on using the client id and client secret.
-ClintID and ClientSecret are the credentials given to the client itself, and the authorization server uses the client credentials to authenticate the client.
+In all of our demos and projects, there was client authentication going on using the client id and client secret.  
+CliendID and ClientSecret are the credentials given to the client itself, and the authorization server uses the client credentials to authenticate the client.
 
 ```
 "token_endpoint_auth_methods_supported": [

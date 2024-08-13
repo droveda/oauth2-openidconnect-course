@@ -1,0 +1,43 @@
+Instructions on running "My Photos Angular Client" from Windows/Linux/Mac
+=========================================================================
+
+This code has been tested with
+- Node 20.14.0
+- NPM 10.4.0
+- Angular 17.2
+
+Steps:
+
+1. Install latest Node.js (Angular needs Node.js)
+
+    https://nodejs.org/en/
+
+    Make sure that the Node Package Manager is automatically installed by checking
+
+    npm -v
+
+2. From directory "myalbum", run the following command
+   to install all node module dependencies.
+
+    npm install
+
+
+3. Open the file src/app/myphotos.model.ts and uncomment the appropriate settings
+   depending on which Authorization Server you want to use. (Google or Okta). Make
+   sure you have the client registered with the Authorization Server and enter that 
+   client ID.
+
+4. If you are running the Okta Setup, then you would have to start the "My Photos
+   Resource Server" at port 8081. Look at the instructions in lecture "Okta Coding project :
+   Spring Boot 'My Photos Client'" local setup on how to do that. For this, you just need to
+   run the resource server and not the client
+
+5. To run the Web server with Angular Client installed at port 4200, run the following command
+   from the root of the Angular application.
+
+    ng serve
+
+6. Access the "My Photos Angular Client" from a browser.
+
+    http://localhost:4200/
+

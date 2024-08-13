@@ -1,0 +1,24 @@
+
+		<div class="row mt-4 ml-1" >
+
+        <!-- Shows the user information -->
+				<div class="card" style="width: 15rem;" *ngIf="validAccessToken">
+					<img [src]="picture" class="card-img-top" alt="Card image cap">
+					<div class="card-body">
+						<h6 class="card-title">
+							{{name}} <br>
+							{{email}}
+						</h6>
+						<p class="card-text">Click on the button to see all your
+							albums from your Photos Library</p>
+						<button type="button" class="btn btn-primary" (click)="showAlbums()">Show Albums</button>
+					</div>
+        </div>
+
+        <div *ngIf="!validAccessToken">
+          Please wait...
+        </div>
+
+    </div>
+
+

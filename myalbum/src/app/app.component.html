@@ -1,0 +1,25 @@
+
+	<div class='container-fluid'>
+
+    <!-- The header with project name and logout link -->
+    <div class="row album-header">
+      <div class="col">
+        <h2>
+          My Photos Angular Demo
+        </h2>
+      </div>
+
+      <div class="d-flex flex-row-reverse bd-highlight">
+        <div class="p-2 bd-highlight">
+          <a href="#" style="color: #e8e3e3" (click) = "logout()">Logout</a>
+        </div>
+				<div class="p-2 bd-highlight">
+					<img [src]="picture" class="img-circle" width="35" height="35">
+				</div>
+      </div>
+    </div>
+
+    <!-- This is where the various albums, photos will be displayed-->
+    <router-outlet></router-outlet>
+
+</div>
