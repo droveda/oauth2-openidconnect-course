@@ -75,3 +75,17 @@ https://www.rfc-editor.org/rfc/rfc8252.txt
 The RFC related to the Device Authorization Grant is RFC 8628 and the link is provided below. It provides a good explanation of the grant and you can go through this RFC if you plan to implement the Device Authorization grant for your project.  
 
 https://tools.ietf.org/html/rfc8628  
+
+
+# Delegated Authentication
+
+* There should be a TRUST between the **Identity Management System** and the **Web Application** this can be achieved by using public/private keys certificates.
+* The messages which are sent back end forth between the IDM and the application are digitally signed and optionally encrypted
+  * When the web applciation sends a request, it signs it using the application's private key and then encrypt the message using the IDM's public key
+  * The IDM, on the other hand will verify the signature using the applciation's public key and decrypt using it's own private key.
+  * When the IDM sends an authentication response to the applciation, the IDM signs it using the IDM Private key and then encrypt the message using the Application's public key
+  * The Web Application will verify the signature it using the IDM's Public Key and decrypt the data using it's own private key
+* So in order for all of these to work correcly, the IDM and the application should really know about each other's public keys or certificates.
+
+
+![delegated](/images/delegated.png)
