@@ -177,7 +177,7 @@ Signing & Verification (Using openssl dgst)
     openssl dgst -sha512 -sign alice-private.pem -out dataimage-digest.sign dataimage.png
 
     # Create base64 representation of dataimage-digest.sign
-    ase64 -i dataimage-digest.sign > dataimage-digest.sign.base64 
+    base64 -i dataimage-digest.sign > dataimage-digest.sign.base64 
 
     # Create base64 representation of dataimage.png
     base64 -i dataimage.png > dataimage.png.base64
@@ -216,4 +216,4 @@ Signing & Verification (Using openssl pkeyutl)
 
 ### This command creates a 2048-bit private key (domain.key) and a self-signed certificate (domain.crt) from scratch:
 openssl req -newkey rsa:2048 -nodes -keyout domain.key -x509 -days 365 -out domain.crt
-
+openssl req -x509 -nodes -sha256 -days 3650 -newkey rsa:2048 -keyout private.key -out certificate.crt
