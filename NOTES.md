@@ -53,6 +53,9 @@ Encrypt and Decrypt using a Secret private key.
 * Efficient for large data
 * Hard to share secret key
 
+AES -> Advanced Encryption Standard  
+DES -> Data Encryption Standard  
+
 
 ### Asymmetric Encryption
 * Private Key - The private key is always keept with the owner and in a safe place. This key basically represents the owner. The owner can digitally sign the data using his private key
@@ -84,7 +87,7 @@ For testing purposes, you can actually create self-signed certificates where the
 ### Hybrid Encryption
 Both symmetric and asymmetric encryption are used.  
 The random secret key can be encrypted using the RSA public key of the destination.  
-And this RSA encrypted key can be sent along with the AES encryoted data as a single package to the destination.  
+And this RSA encrypted key can be sent along with the AES encrypted data as a single package to the destination.  
 
 ![Hybrid Encryption](/images/hybrid.png)
 
@@ -102,9 +105,9 @@ And this RSA encrypted key can be sent along with the AES encryoted data as a si
 
 1. Alice will first create a hash or a digest of the data (SHA-256)
 2. Alice will then sign the hash with her private key, and that will create a signature for the entire document.
-3. Both the data and the signature are sent over Bob's side, maybe using a HTTP post or any other means. IN SAML, for example, both the data and the signature are combined into a single XML file and sent using HTTP POST. (For OAuth 2.0, JSON **Header** and **Payload** are signed and made part of the **JWT** Token. The signature is part of the JWT Token)
+3. Both the data and the signature are sent over Bob's side, maybe using a HTTP post or any other means. In SAML, for example, both the data and the signature are combined into a single XML file and sent using HTTP POST. (For OAuth 2.0, JSON **Header** and **Payload** are signed and made part of the **JWT** Token. The signature is part of the JWT Token)
 4. The hashing algorithm is also sent as a part of this.
 5. Bob will then get the data part out of it and create a SHA256 hash. Lets' call this **data hash**.
 6. He will then take the signature component and then apply the verify function to it, which is the same as Decrypt function. But he will use Alice's public key to get the hash back, lets' call this the **sign hash**.
-7. If Bob finds that the **data hash** is the same as the **sign hash**, then he is confident that it is Alice who has sent this message. Remember that a particular hash can only be generated from a particular Data. (The signature is considered "verified" if the Data Hash is the same as the Sign Hash) (For Oauth 2.0 we will be talking about Signatures but not Encryption because its not used often)
+7. If Bob finds that the **data hash** is the same as the **sign hash**, then he is confident that it is Alice who has sent this message and its's not tampered. Remember that a particular hash can only be generated from a particular Data. (The signature is considered "verified" if the Data Hash is the same as the Sign Hash) (For Oauth 2.0 we will be talking about Signatures but not Encryption because its not used often)
 
