@@ -108,7 +108,7 @@ This will be covered in detail in future lectures.
   * Access tokens are valid for a certain ammount for time, for example 60 minutes
   * When we get the access token, we can also get a refresh token along with that.
   * The refresh token usually has a much higher timeout setting, in fact in Google it never expires.
-  * The client can then use the refresh token to get a new access token so basically the client will make another call to th  e Authorization server where the **grant type is refresh token** and the parameters would be the **expired access token** and the **refresh token** technically it is a separate grant type, but it is mostly used in conjunction with an Authorization code grant or the Resource Owner password credentials grant.
+  * The client can then use the refresh token to get a new access token so basically the client will make another call to the Authorization server where the **grant type is refresh token** and the parameters would be the **expired access token** and the **refresh token** technically it is a separate grant type, but it is mostly used in conjunction with an Authorization code grant or the Resource Owner password credentials grant.
   * ![Hybrid Encryption](/images/refresh-token.png)
 * **Token Revocation**
   * ![Hybrid Encryption](/images/token-revogation.png)
@@ -132,8 +132,8 @@ The JWT is small and contains enough information for verification of the token, 
 OpenID Connect fill the gap, in order to get more information of the user, for instance User name, lastname, department, photo, etc...  
 OpenID Connect defines a set of scopes that can be used to retrieve the user information after the user gets authenticated.  
 OpenID Scopes are built-in scopes which allow the client to get information about the user and by the way the user would have to still authorize these as well  
-The Client will have to specify the OpenID specifc scopes when asking for the token. The OpenID scopes are openid, profile, email, address and phone.  
-The Authorization server will return an access token as well as an **OpenID ID Token** which contains user information. If you specify openid as a scope, the client can also call the user information that is the user info  
+The Client will have to specify the OpenID specifc scopes when asking for the token. The OpenID scopes are **openid, profile, email, address and phone**.  
+The Authorization server will return an access token as well as an **OpenID ID Token** which contains user information. If you specify openid as a scope, the client can also call the user information that is the user info endpoint.  
 
 * OpenID Scopes and Token
   * openid profile email address phone

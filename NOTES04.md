@@ -142,7 +142,7 @@ It is composed by three parts, separated by a **'.'** character
    3. type: JWT
 2. Payload, contains the information
 3. Signature
-   1. RSASHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), PUBLIC_KEY)
+   1. RSASHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), PRIVATE_KEY)
 
 ![Hybrid Encryption](/images/jwt.png)  
 
@@ -166,7 +166,7 @@ https://8gwifi.org/jwkconvertfunctions.jsp
 ## PKCE Extension
 * Proof Key For Code Exchange
 * Extension of the Authorization Code grant type
-* Usually used by pubblic clients
+* Usually used by public clients
 * Send code_challenge with authorized requests
   * code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
     * the big deal here is that you can go from the **code_verifier** to the **code_challenge** but you cannot go from the **code_challenge** to the **code_verifier**
@@ -177,7 +177,7 @@ Here is how the PKCE flow works:
 ![Hybrid Encryption](/images/PKCE-flow.png) 
 
 ### LAB PKCE
-code_verifier = This is a dumb verifier (In real world scenarios, the code_verifier must be much londer and generated dynamically for each authorize request)  
+code_verifier = "This is a dumb verifier" (In real world scenarios, the code_verifier must be much londer and generated dynamically for each authorize request)  
 https://tonyxu-io.github.io/pkce-generator (To generate code verifier)  
 
 usdhsdskajsdksdjaskdjsakdjsak
@@ -220,7 +220,7 @@ See project "my-photos-client-3.3.zip", albums-client
     <artifactId>spring-boot-starter-web</artifactId> 
 </dependency>
 ```
-Now, one good thing about the spring security is that once we include the oauth2 client as dependency in the maven, the entire application is set up as oauth2 client. Whenever any user accesses any of the client url the OAuth flow automatically gets initiated based on the setting in the Spring Boot application.properties. There are ways to set security configuration but we have the default setup.  
+Now, one good thing about the spring security is that once we include the **oauth2 client** as dependency in the maven, the entire application is set up as oauth2 client. Whenever any user accesses any of the client url the OAuth flow automatically gets initiated based on the setting in the Spring Boot application.properties. There are ways to set security configuration but we have the default setup.  
 The default setup protects all urls of the Application.  
 
 ---
@@ -230,7 +230,7 @@ An application can make use of **OAuth2AuthenticationToken**, to retrieve the us
   OAuth2User principal = oAuth2AuthenticationToken.getPrincipal();
 ```
 
-In practice, Spring Security can handle **GLobal Logout** as well. However, Google does not follow the global logout specifications - so I created this logout method to be compliant with both Okta and Google.  
+In practice, Spring Security can handle **Global Logout** as well. However, Google does not follow the global logout specifications - so I created this logout method to be compliant with both Okta and Google.  
 Also note that the downloaded code version includes a post logout url so the Authorization Server will redirect back to the application after sucessful logout.  
 It is also a good idea to revoke the access token and refresh token.  
 
