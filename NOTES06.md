@@ -15,7 +15,7 @@
       * ```alg: RS256``` this property in the header tells that the JWT will be signed using the RSA256 algorithm
     * Next is does the Base64 URL Encoded, Base64 is to make sure that any binary data is converted to text and URL encoding to make sure that the access token can be sent as part of the URL.
     * The final puzzle is how the signature is created:
-      * RSA256 is the shorthand form for RSA algorithm and SHA 256 algorithm
+      * RS256 is the shorthand form for RSA algorithm and SHA 256 algorithm
         * Why are there two - RSA and SHA?
           * The way the signature is created is, first a hash is created from the data using a hashing algorithm, then the hased output is signed using the RSA private key of the Okta authorization server.
 
