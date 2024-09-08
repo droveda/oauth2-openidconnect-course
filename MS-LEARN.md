@@ -40,7 +40,7 @@ https://learn.microsoft.com/en-us/entra/identity-platform/scenario-web-app-sign-
         * Inform the logout URI
         * Click checkbox to enable Id Tokens -> [x] Id Tokens (used for implicity and hybrid flows)
         * Click on "Configure"
-  * Left side menu, click on Manage -> Client & Secrets
+  * Left side menu, click on Manage -> **Certificates & Secrets**
     * In the Client secrets section, select New client secret, and then:
       * Enter a key description.
       * Select the key duration In 1 year.
@@ -65,7 +65,7 @@ prerequisites:
     https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize
     ?response_type=code
     &client_id={my_client_id}
-    &scope=openid%20profile%20email%20https://storage.azure.com/user_impersonation
+    &scope=openid%20profile%20email%20https://storage.azure.com/user_impersonation%20offline_access
     &state=state123
     &redirect_uri=http://localhost:8080
     &access_type=offline
@@ -76,15 +76,18 @@ prerequisites:
 
 2. Send the request to exchange the **auth code** to the **access token**
 ```
-  POST https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token
+  // This one worked better field "scope" added with the client_id, solved the signature verification on jwt.io 
+  // The solution found on "https://stackoverflow.com/questions/74900335/invalid-signature-azure-access-token-jwt-io"\
 
+  POST https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token
   curl --location 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token' \
         --header 'Content-Type: application/x-www-form-urlencoded' \
         --data-urlencode 'grant_type=authorization_code' \
-        --data-urlencode 'client_id=<my-client-id>' \
-        --data-urlencode 'client_secret=<my-client-secret>' \
-        --data-urlencode 'code=<my-auth-code>' \
-        --data-urlencode 'redirect_uri=http://localhost:8080'
+        --data-urlencode 'client_id={my-client-id}' \
+        --data-urlencode 'client_secret={my-client-secret}' \
+        --data-urlencode 'code={my-auth-code}' \
+        --data-urlencode 'redirect_uri=http://localhost:8080' \
+        --data-urlencode 'scope={my-client-id}/.default'
 ```
 
 3. Access the blob file using the **access token**
@@ -96,6 +99,41 @@ prerequisites:
     --header 'x-ms-version: 2024-05-04'
 ```
 
+4. Getting a new Token using the refresh token
+```
+POST https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token
+
+curl --location 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token' \
+  --header 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'grant_type=refresh_token' \
+  --data-urlencode 'client_id=<my-client-id>' \
+  --data-urlencode 'client_secret=<my-client-secret>' \
+  --data-urlencode 'refresh_token=<the-refresh-token>'
+  --data-urlencode 'scope=https://graph.microsoft.com/.default'
+```
+
+5. Get User info using the **access token**
+```
+POST https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token
+curl --location 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token' \
+      --header 'Content-Type: application/x-www-form-urlencoded' \
+      --data-urlencode 'grant_type=authorization_code' \
+      --data-urlencode 'client_id={my-client-id}' \
+      --data-urlencode 'client_secret={my-client-secret}' \
+      --data-urlencode 'code={my-auth-code}' \
+      --data-urlencode 'redirect_uri=http://localhost:8080' \
+      --data-urlencode 'scope=https://graph.microsoft.com/.default'
+
+
+https://graph.microsoft.com/.default
+
+curl --location 'https://graph.microsoft.com/oidc/userinfo' \
+--header 'Authorization: Bearer <the-access-token>' \
+--header 'x-ms-version: 2024-05-04'
+```
+
+
+
 ## Lab Using the authorization code flow, using private_key_jwt auth method
 prerequisites:  
 * Start a local web server: **python3 -m http.server 8080**  
@@ -103,7 +141,47 @@ prerequisites:
 * Have an **app registration** following the instructions above  
 * Give to the user that you want to impersionate **Storage Blob Data Reader** role access to the **Storage Account**  
 
-TODO  
+1. https://learn.microsoft.com/en-us/entra/identity-platform/certificate-credentials  
+2. https://learn.microsoft.com/en-us/answers/questions/1388776/how-to-get-access-token-using-certificate-based-au (this link helped a lot)
+3. generate a private key and a certificate:
+   1. openssl req -x509 -nodes -sha256 -days 3650 -newkey rsa:2048 -keyout private.key -out certificate.crt
+
+
+```
+# Using client_credentials grant flow
+curl --location 'https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'grant_type=client_credentials' \
+--data-urlencode 'scope={client_id}/.default' \
+--data-urlencode 'client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer' \
+--data-urlencode 'client_assertion={my_signed_jwt_content}'
+```
+
+```
+# Python Script to generate the KID
+import binascii
+import base64
+
+thumbprint_hex = 'paste-the-certificate-thumbprint'
+thumbprint_binary = binascii.unhexlify(thumbprint_hex)
+
+x5t_compliant = base64.b64encode(thumbprint_binary).decode('utf-8')
+print(x5t_compliant)
+
+```
+
+```
+# Using authorization_code grant flow
+curl --location 'https://login.microsoftonline.com/ba9f55a7-2eb5-49fe-bd58-f51d3a68eb1b/oauth2/v2.0/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'grant_type=authorization_code' \
+--data-urlencode 'scope={client_id}/.default' \
+--data-urlencode 'client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer' \
+--data-urlencode 'client_assertion={my_signed_jwt_content}' \
+--data-urlencode 'redirect_uri=http://localhost:8080' \
+--data-urlencode 'code={the-auth-code}'
+```
+
 
 
 
