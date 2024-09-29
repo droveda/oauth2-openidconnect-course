@@ -37,7 +37,7 @@
 * Will be using postman to execute the http requests
 
 
-### Deev Dive : Authorization Code Grant Type
+### Deep Dive : Authorization Code Grant Type
 https://developers.google.com/identity/protocols/oauth2  
 The site above you can use it in order to search the scopes for the google APIs
 
@@ -147,9 +147,9 @@ It is composed by three parts, separated by a **'.'** character
 ![Hybrid Encryption](/images/jwt.png)  
 
 ### JWKS Endpoint
-**Json Web Key Set** endpoint **JWKS** comes into the picture, because every Authorization server has an endpoint which tells us that are all the keys which are used for signing the access tokens. So how do I find out where this endpoint is? Again we go back to the openid configuration  
+**Json Web Key Set** endpoint **JWKS** comes into the picture, because every Authorization server has an endpoint which tells us where are all the keys which are used for signing the access tokens. So how do I find out where this endpoint is? Again we go back to the openid configuration  
 
-The site followed field 'iss' in payload to get the Discovery EP. Applications should not do this.  
+The site followed the field 'iss' in payload to get the Discovery EP. Applications should not do this.  
 
 JWK -> Json Web Key  
 

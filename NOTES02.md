@@ -62,7 +62,7 @@ ADFS stands for Active Directory Federation Service
 
 ![Hybrid Encryption](/images/SAML02.png)
 
-SAML Request and Response is an XML. Not that at no point - user password is exposed to application.
+SAML Request and Response is an XML. Note that at no point - user password is exposed to application.
 
 * SAML Metadata File
 * Trust Between

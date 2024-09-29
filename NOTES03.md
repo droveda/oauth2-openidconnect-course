@@ -47,7 +47,7 @@ A Resource Owner should never send the password to the Third Party (untrusted) A
 
 ### Oauth 2.0 - Opaque Token
 Access Token is sent in an HTTP Header  
-Authorization : Bearer <token>  
+Authorization : Bearer ```<token>```  
 Think about the access token as a key which opens the door to the Resource Server  
 Scopes in an Access Token is used by Resource Server for Authorization  
 The Resource Server needs to verify the token in the Authorization Server as it is "opaque"  
@@ -60,7 +60,7 @@ Autorization: Bearer 1d52703551c84012a7b0af09300092ea6
 
 ### Oauth 2. Structured Access Tokens (JWT)
 JWT Token is sent in an HTTP Header   
-Authorization : Bearer <jwt token>  
+Authorization : Bearer ```<jwt token>```  
 The structured token is signed by the Authorization Server using it's private key, and so to verify the token the Resource Server would have to verify the signature using the public sign key, so in a sense instead of sending a separate request to the Authorization Server to verify the token, the Resource Server will verify the signature and the token itself, so this avoid a new call to the Authorization Server.  
 But how would the Resource Server get the public signing key? The Authorization Server would have a specific endpoint that would retrieve the signing key and the Resource Server would use that.  
 Other verifications are also done - Expiry Time, Issuer validation, etc...  
