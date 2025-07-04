@@ -4,6 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 secret.txt
+course02/secrets.txt
 
 ### STS ###
 .apt_generated
