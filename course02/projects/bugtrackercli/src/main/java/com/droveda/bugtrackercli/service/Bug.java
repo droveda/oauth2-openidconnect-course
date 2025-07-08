@@ -14,9 +14,7 @@ public record Bug(
 ) {
 
     public enum BugSeverity {
-        LOW,
-        MEDIUM,
-        HIGH
+        LOW, MINOR, MAJOR, CRITICAL
     }
 
     public enum BugState {

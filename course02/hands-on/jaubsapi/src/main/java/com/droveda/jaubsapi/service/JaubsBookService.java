@@ -1,9 +1,9 @@
-package org.jaubs.service;
+package com.droveda.jaubsapi.service;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
-public class JaubsBookService implements IJaubsBookService {
+public class JaubsBookService {
 
     private final AtomicLong idGenerator = new AtomicLong();
 
@@ -42,24 +42,21 @@ public class JaubsBookService implements IJaubsBookService {
 
     }
 
-    @Override
-    public void createBookItem(BookItem item) {
 
+    public void createBookItem(BookItem item) {
         // extract the user of the Application
-        OAuth2AuthenticationToken token
-                = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        OidcUser principal = (OidcUser) token.getPrincipal();
+        Authentication token = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) token.getPrincipal();
 
         // create a new Book item
         long id = idGenerator.getAndIncrement();
         item.setId(id);
         item.setSold(false);
-        item.setCreator(principal.getEmail());
+        item.setCreator(principal.getClaimAsString("email"));
 
         items.add(item);
     }
 
-    @Override
     public void updateBookItem(BookItem item) {
 
         items.stream()
@@ -69,7 +66,6 @@ public class JaubsBookService implements IJaubsBookService {
 
     }
 
-    @Override
     public BookItem getItem(long id) {
 
         return items.stream()
@@ -79,25 +75,22 @@ public class JaubsBookService implements IJaubsBookService {
 
     }
 
-    @Override
     public void deleteItem(long id) {
         items.removeIf(e -> e.getId() == id);
     }
 
-    @Override
     public void buyItem(long id) {
 
         // extract the user of the Application
-        OAuth2AuthenticationToken token
-                = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        OidcUser principal = (OidcUser) token.getPrincipal();
+        Authentication token = SecurityContextHolder.getContext().getAuthentication();
+        Jwt principal = (Jwt) token.getPrincipal();
 
         items.stream()
                 .filter(e -> e.getId() == id)
                 .findFirst()
                 .ifPresent(e -> {
                     e.setSold(true);
-                    String email = principal.getEmail();
+                    String email = principal.getClaimAsString("email");
                     LocalDate now = LocalDate.now();
                     soldItems.add(new SoldItem(e, email, now));
                     System.out.println("** Added to solditems list " + email);
@@ -105,14 +98,12 @@ public class JaubsBookService implements IJaubsBookService {
 
     }
 
-    @Override
     public List<BookItem> findAllOpenItems() {
         return this.items.stream()
                 .filter(item -> !item.getSold())
                 .toList();
     }
 
-    @Override
     public List<SoldItem> findSoldItems(String user) {
         return this.soldItems.stream()
                 .filter(e -> user.equalsIgnoreCase(e.buyer()))

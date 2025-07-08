@@ -9,12 +9,14 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-public class BugTrackerService {
+public class BugTrackerService implements IBugTrackerService {
 
     private static final List<String> INITIAL_APPS = List.of("App1", "App2", "App3", "App4", "App5");
 
@@ -40,7 +42,7 @@ public class BugTrackerService {
                 "Integration does not work",
                 "Integration is not working because...",
                 "App2",
-                Bug.BugSeverity.HIGH, Bug.BugState.OPEN);
+                Bug.BugSeverity.MAJOR, Bug.BugState.OPEN);
 
         bugs.add(b2);
 
@@ -58,11 +60,12 @@ public class BugTrackerService {
                 "Out of memory error",
                 "OOO...",
                 "App3",
-                Bug.BugSeverity.HIGH, Bug.BugState.CLOSED);
+                Bug.BugSeverity.MAJOR, Bug.BugState.CLOSED);
 
         bugs.add(b4);
     }
 
+    @Override
     public Bug createBug(Bug bug) {
         //extract the user of the application
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
@@ -85,6 +88,7 @@ public class BugTrackerService {
         return clonedBug;
     }
 
+    @Override
     public Bug updateBug(Bug bug) {
         int index = IntStream.range(0, this.bugs.size())
                 .filter(i -> this.bugs.get(i).equals(bug.id()))
@@ -96,14 +100,17 @@ public class BugTrackerService {
         return bug;
     }
 
+    @Override
     public List<Bug> findAllBugs() {
         return List.copyOf(this.bugs);
     }
 
+    @Override
     public boolean deleteBug(Long bugId) {
         return this.bugs.removeIf(bug -> bug.id().equals(bugId));
     }
 
+    @Override
     public Bug getBug(Long bugId) {
         return this.bugs.stream()
                 .filter(b -> b.id().equals(bugId))
@@ -111,10 +118,12 @@ public class BugTrackerService {
                 .orElseThrow();
     }
 
+    @Override
     public BugTrackerConfiguration getConfiguration() {
         return trackerConfig.get();
     }
 
+    @Override
     public void addProject(String newProject) {
         BugTrackerConfiguration configuration = trackerConfig.get();
         List<String> projects = configuration.projects();
@@ -126,6 +135,7 @@ public class BugTrackerService {
         trackerConfig.set(new BugTrackerConfiguration(newApps));
     }
 
+    @Override
     public void removeProject(String project) {
         BugTrackerConfiguration configuration = trackerConfig.get();
         List<String> apps = configuration.projects();
@@ -136,4 +146,16 @@ public class BugTrackerService {
         trackerConfig.set(new BugTrackerConfiguration(newAppList));
     }
 
+    @Override
+    public BugStatistics getBugStatistics(String token) {
+        List<Bug> allBugs = findAllBugs();
+
+        Map<Bug.BugState, Long> countsMap
+                = allBugs.stream().collect(Collectors.groupingBy(
+                Bug::state, Collectors.counting()));
+
+        return new BugStatistics(
+                countsMap.get(Bug.BugState.OPEN),
+                countsMap.get(Bug.BugState.CLOSED));
+    }
 }

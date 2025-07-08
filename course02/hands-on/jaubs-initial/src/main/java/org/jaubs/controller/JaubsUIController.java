@@ -1,10 +1,10 @@
-package org.jaubs;
+package org.jaubs.controller;
 
 import jakarta.validation.constraints.NotNull;
 import org.jaubs.service.BookItem;
-import org.jaubs.service.JaubsBookService;
+import org.jaubs.service.IJaubsBookService;
 import org.jaubs.service.SoldItem;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jaubs.util.JaubsUtils;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -25,8 +25,11 @@ import java.util.List;
 @Controller
 public class JaubsUIController {
 
-    @Autowired
-    private JaubsBookService bookService;
+    private final IJaubsBookService bookService;
+
+    public JaubsUIController(IJaubsBookService bookService) {
+        this.bookService = bookService;
+    }
 
     @GetMapping("/")
     public String slash() {
@@ -38,7 +41,7 @@ public class JaubsUIController {
             OAuth2AuthenticationToken token,
             @RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient client) {
 
-        OidcUser principal = (OidcUser)token.getPrincipal();
+        OidcUser principal = (OidcUser) token.getPrincipal();
 
         ModelAndView model = generateDefaultModel(token);
 
@@ -104,7 +107,7 @@ public class JaubsUIController {
 
     @GetMapping("/jaubs/ui/admin/delete-item-conf")
     public ModelAndView deleteBookItemConf(OAuth2AuthenticationToken token,
-                                     @RequestParam @NotNull Long itemId) {
+                                           @RequestParam @NotNull Long itemId) {
 
         BookItem item = bookService.getItem(itemId);
 
@@ -145,7 +148,7 @@ public class JaubsUIController {
     @GetMapping("/jaubs/ui/show-bought-items")
     public ModelAndView showBoughtItems(OAuth2AuthenticationToken token) {
 
-        OidcUser principal = (OidcUser)token.getPrincipal();
+        OidcUser principal = (OidcUser) token.getPrincipal();
 
         List<SoldItem> soldItems
                 = bookService.findSoldItems(principal.getEmail());

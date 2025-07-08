@@ -1,4 +1,4 @@
-package org.jaubs;
+package org.jaubs.util;
 
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;

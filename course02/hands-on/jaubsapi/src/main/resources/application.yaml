@@ -1,0 +1,21 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: jaubsapi
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://127.0.0.1:9090/realms/jaubs
+
+
+logging:
+  level:
+    web: TRACE
+  org:
+    springframework:
+      web:
+        client: TRACE
+      security: TRACE

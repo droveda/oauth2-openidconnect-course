@@ -2,7 +2,7 @@ package com.droveda.bugtrackercli.controller;
 
 import com.droveda.bugtrackercli.service.Bug;
 import com.droveda.bugtrackercli.service.BugTrackerConfiguration;
-import com.droveda.bugtrackercli.service.BugTrackerService;
+import com.droveda.bugtrackercli.service.IBugTrackerService;
 import com.droveda.bugtrackercli.utils.BugTrackerUtils;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,9 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class BugTrackerUIController {
 
-    private final BugTrackerService trackerServ;
+    private final IBugTrackerService trackerServ;
 
-    public BugTrackerUIController(BugTrackerService trackerServ) {
+    public BugTrackerUIController(IBugTrackerService trackerServ) {
         this.trackerServ = trackerServ;
     }
 
