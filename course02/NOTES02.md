@@ -44,14 +44,14 @@ User-Agent HTTPie
 
 
 
-#### auth-code-with-pkce-trant-type
+#### auth-code-with-pkce-grant-type
 * Proof key for code exchange
 * Extemsion of the Authorization Code grant type
 * Usually used by public clients
 
 1. Generate a code_verifier
    1. min 43 chars and max = 128 chars
-   2. Random and impreactical to guess
+   2. Random and impractical to guess
 2. Send code_challenge with authorize request
    1. code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
 3. Send code_verifier with token request for grant type = code
@@ -64,7 +64,7 @@ User-Agent HTTPie
 scheduled tasks, batch processing, etc...  
 ![Client Credentials](/course02/images/client-credentials-grant-type.png)
 
-In some enterprise applications it can by used like a **Service Account**, you do not have a specific user logged or acting on behalf of a user.  
+In some enterprise applications it can be used like a **Service Account**, you do not have a specific user logged or acting on behalf of a user.  
 
 
 ### OpenID Connect

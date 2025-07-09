@@ -20,8 +20,8 @@ Do the necessary changes in the spring-boot app.
 ![Multiple Providers](/course02/images/multiple-provider-001.png)
 
 ## Client Registration in Gitlab
-1. create a account in gitklab if you do not have one
-2. log into gitlab, do to the user settings/preferences
+1. create a account in GitLab if you do not have one
+2. log into gitlab, go to the user settings/preferences
 3. click on Applications
    1. name = bugtracker
    2. redirect URL = http://localhost:8080/login/oauth2/code/gitlab-oidc

@@ -40,7 +40,7 @@ In our security configuration code, we create a bean for the Convertor class. In
 
 
 ## Schedulers in an Enterprise
-client credentials grant.  
+Client credentials grant.  
 
 ![scheduler with client credentials](/course02/images/scheduler-use-case.png)
 

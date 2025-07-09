@@ -3,7 +3,7 @@
 
 ## Keycloak Architecture
 Identity and Access Management System (IAMS).  
-Keycloak is basically nothing but an identity and access managemtn system and it is completely open source.  
+Keycloak is basically nothing but an identity and access management system and it is completely open source.  
 Oauth2, OpenID Connect, SAML.  
 Keycloack can be used as a single sign on server.  
 Can act as a SAML identity provider, or it can even act as an OAuth authorization server.  
@@ -26,9 +26,9 @@ It can act like an identity broker in the middle between your application and an
 * https://github.com/keycloak/keycloak/releases/tag/22.0.5
 * Download the zip or tar.gz file and extract it to your home directory
 * Include the path to the keycloack in your .bash_profile or .zshrc file. Example:
-  * export KEYCLOACK_HOME=/Users/dieguesroveda/keycloak-22.0.5
-  * PATH="$KEYCLOACK_HOME/bin:$PATH:/Users/dieguesroveda/.nexustools"
-  * export PATH
+  * ```export KEYCLOACK_HOME=/Users/dieguesroveda/keycloak-22.0.5```
+  * ```PATH="$KEYCLOACK_HOME/bin:$PATH:/Users/dieguesroveda/.nexustools"```
+  * ```export PATH```
 * Change the default keycloak port to 9090
   * file -> /Users/dieguesroveda/keycloak-22.0.5/keycloak.conf
   * add the following property at the end of the file ```http-port=9090```
@@ -75,7 +75,7 @@ db-url=jdbc:postgresql://localhost:5432/keycloakdb
 ```
 what is a realm in Keycloak?
 the users, groups, apps, etc... are organized into realms
-your enterprise could have a single realm with all users,s apps and groups or you can have one realm for department
+your enterprise could have a single realm with all users apps and groups or you can have one realm for department
 It is basically segregation and can be managed by diferent admins
 ```
 

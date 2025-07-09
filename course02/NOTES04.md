@@ -76,3 +76,31 @@ curl --location 'http://localhost:9090/realms/oauthrealm/protocol/openid-connect
     --data-urlencode 'code=<my-auth-code>' \
     --data-urlencode 'redirect_uri=http://localhost:9092'
 ```
+
+----
+----
+----
+
+### Testing grant-type - authorization_code WITH PKCE
+* start a server: ```python3 -m http.server 9092```
+* well known: ```http://localhost:9090/realms/oauthrealm/.well-known/openid-configuration```
+* auth URL: ```http://localhost:9090/realms/oauthrealm/protocol/openid-connect/auth```
+
+```
+# get the auth code
+http://127.0.0.1:9090/realms/oauthrealm/protocol/openid-connect/auth?response_type=code&client_id=bugtracker&scope=openid%20profile%20email%20bugtracker&state=something&redirect_uri=http://localhost:9092&nonce=_Kn3kG92NZVzQn7MCDaeF3Sifh5wYnNNQGiYnCRvsrs&code_challenge_method=S256&code_challenge=hQoqeqthnqn9METfJW-l2ZiCjYuUb2yzH5UeS_g-l5Y
+```
+
+```
+# get the token
+curl --location 'http://localhost:9090/realms/oauthrealm/protocol/openid-connect/token' \
+    --header 'Content-Type: application/x-www-form-urlencoded' \
+    --data-urlencode 'grant_type=authorization_code' \
+    --data-urlencode 'client_id=<my-client-id>' \
+    --data-urlencode 'client_secret=<my-client-secret>' \
+    --data-urlencode 'code=<my-auth-code>' \
+    --data-urlencode 'redirect_uri=http://localhost:9092' \
+    --data-urlencode 'code_verifier=Wc3bpb6DvEoprDGjig3KcR3Xvpx0gCbPpBxR1plhHaw'
+```
+
+https://tonyxu-io.github.io/pkce-generator/  
