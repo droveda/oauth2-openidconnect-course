@@ -15,6 +15,9 @@ public class BookItem {
         FAIR, GOOD, ASNEW
     }
 
+    public BookItem() {
+    }
+
     public BookItem(Long id, String name, String author, Double price, BookCondition condition,
                     String notes, String creator, Boolean sold) {
         this.id = id;

@@ -2,13 +2,17 @@ package com.droveda.bugtrackercli.controller;
 
 import com.droveda.bugtrackercli.service.Bug;
 import com.droveda.bugtrackercli.service.BugTrackerConfiguration;
+import com.droveda.bugtrackercli.service.GitLabService;
 import com.droveda.bugtrackercli.service.IBugTrackerService;
 import com.droveda.bugtrackercli.utils.BugTrackerUtils;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,18 +21,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 public class BugTrackerUIController {
 
+    private static final Logger log = LoggerFactory.getLogger(BugTrackerUIController.class);
     private final IBugTrackerService trackerServ;
+    private final GitLabService gitLabService;
 
-    public BugTrackerUIController(IBugTrackerService trackerServ) {
+    public BugTrackerUIController(IBugTrackerService trackerServ, GitLabService gitLabService) {
         this.trackerServ = trackerServ;
+        this.gitLabService = gitLabService;
     }
 
     @GetMapping("/")
     public String slash() {
         return "redirect:/bugtracker/ui";
+    }
+
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "redirect:/oauth2/authorization/keycloak-oidc";
     }
 
     @GetMapping("/bugtracker/ui")
@@ -72,6 +86,26 @@ public class BugTrackerUIController {
         model.addObject("bug", Bug.emptyBug(token.getName()));
         model.addObject("projects", cfg.projects());
         return model;
+    }
+
+    @GetMapping("/bugtracker/gitlab-projects")
+    public ModelAndView showGitLabProjects(
+            OAuth2AuthenticationToken loginToken,
+            @RegisteredOAuth2AuthorizedClient("gitlab-oauth") OAuth2AuthorizedClient gitLabClient
+    ) {
+        //get the gitlab token
+        OAuth2AccessToken gitlabToken = gitLabClient.getAccessToken();
+        log.info("gitlab token: {}", gitlabToken.getTokenValue());
+
+        List<GitLabService.GitLabProject> projects = gitLabService.getProjects(gitlabToken.getTokenValue());
+
+        //pass the GitLab projects to the view called gitlab-projects
+        ModelAndView model = generateDefaultModel(loginToken);
+        model.setViewName("gitlab-projects");
+        model.addObject("projects", projects);
+
+        return model;
+
     }
 
     @PostMapping("/bugtracker/ui/save-bug")

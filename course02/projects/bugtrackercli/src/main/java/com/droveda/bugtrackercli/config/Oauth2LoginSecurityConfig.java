@@ -2,14 +2,11 @@ package com.droveda.bugtrackercli.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProvider;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
@@ -24,6 +21,7 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +45,7 @@ public class Oauth2LoginSecurityConfig {
         http
                 .authorizeHttpRequests(authorize ->
                                 authorize
+                                        .requestMatchers("/login").permitAll()
                                         .requestMatchers("/bugtracker/ui").authenticated()
 //                                .requestMatchers("/bugtracker/ui/admin/**").hasAnyAuthority("ROLE_bugtracker.admin")
                                         .requestMatchers("/bugtracker/ui/admin/**").hasAnyRole("bugtracker.admin")
@@ -58,11 +57,17 @@ public class Oauth2LoginSecurityConfig {
                 //.oauth2Login(Customizer.withDefaults()) //this is the default configuration
                 .oauth2Login(oauth2 -> //this one is to use PKCE along with confidential clients
                         oauth2
+                                .loginPage("/login")
                                 .userInfoEndpoint(epConfig -> epConfig.oidcUserService(this.userService()))
                                 .authorizationEndpoint(
                                         cfg -> cfg.authorizationRequestResolver(pkceResolver(clientRegistrationRepository))
                                 ))
-                .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()));
+                .oauth2Client(Customizer.withDefaults())
+                .logout(logout ->
+                        logout
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .logoutSuccessHandler(oidcLogoutSuccessHandler())
+                );
 
         return http.build();
 
@@ -126,23 +131,23 @@ public class Oauth2LoginSecurityConfig {
         return SOCIAL_PROVIDERS.contains(clientName);
     }
 
-    @Bean
-    public AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientServiceAndManager(
-            ClientRegistrationRepository clientRegistrationRepository,
-            OAuth2AuthorizedClientService authorizedClientService) {
-
-        OAuth2AuthorizedClientProvider authorizedClientProvider =
-                OAuth2AuthorizedClientProviderBuilder.builder()
-                        .clientCredentials()
-                        .build();
-
-        AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientManager =
-                new AuthorizedClientServiceOAuth2AuthorizedClientManager(
-                        clientRegistrationRepository, authorizedClientService);
-        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
-
-        return authorizedClientManager;
-    }
+//    @Bean
+//    public AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientServiceAndManager(
+//            ClientRegistrationRepository clientRegistrationRepository,
+//            OAuth2AuthorizedClientService authorizedClientService) {
+//
+//        OAuth2AuthorizedClientProvider authorizedClientProvider =
+//                OAuth2AuthorizedClientProviderBuilder.builder()
+//                        .clientCredentials()
+//                        .build();
+//
+//        AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientManager =
+//                new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+//                        clientRegistrationRepository, authorizedClientService);
+//        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+//
+//        return authorizedClientManager;
+//    }
 
 
 }

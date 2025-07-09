@@ -1,10 +1,14 @@
 package org.jaubs.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.constraints.NotNull;
 import org.jaubs.service.BookItem;
+import org.jaubs.service.GitLabService;
 import org.jaubs.service.IJaubsBookService;
 import org.jaubs.service.SoldItem;
 import org.jaubs.util.JaubsUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -25,15 +29,25 @@ import java.util.List;
 @Controller
 public class JaubsUIController {
 
+    private static final Logger log = LoggerFactory.getLogger(JaubsUIController.class);
+
     private final IJaubsBookService bookService;
 
-    public JaubsUIController(IJaubsBookService bookService) {
+    private final GitLabService gitLabService;
+
+    public JaubsUIController(IJaubsBookService bookService, GitLabService gitLabService) {
         this.bookService = bookService;
+        this.gitLabService = gitLabService;
     }
 
     @GetMapping("/")
     public String slash() {
         return "redirect:/jaubs/ui";
+    }
+
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "redirect:/oauth2/authorization/keycloak-oidc";
     }
 
     @GetMapping("/jaubs/ui")
@@ -57,6 +71,26 @@ public class JaubsUIController {
                 JaubsUtils.prettyBody(tokenValue(refreshToken)));
         model.addObject("idtoken",
                 JaubsUtils.prettyBody(tokenValue(idToken)));
+        return model;
+    }
+
+    @GetMapping("/jaubs/ui/import-books")
+    public ModelAndView importBooks(
+            OAuth2AuthenticationToken token,
+            @RegisteredOAuth2AuthorizedClient("gitlab-oauth") OAuth2AuthorizedClient gitLabClient
+    ) throws JsonProcessingException {
+        //get the gitlab token
+        OAuth2AccessToken gitlabToken = gitLabClient.getAccessToken();
+        log.info("gitlab token: {}", gitlabToken.getTokenValue());
+
+        var books = gitLabService.getBooksFromGitLab(gitlabToken.getTokenValue());
+
+        List<BookItem> openItems = bookService.findAllOpenItems();
+        openItems.addAll(books);
+
+        ModelAndView model = generateDefaultModel(token);
+        model.setViewName("items");
+        model.addObject("items", openItems);
         return model;
     }
 

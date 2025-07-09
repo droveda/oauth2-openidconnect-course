@@ -3,6 +3,7 @@ package org.jaubs.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,6 +22,7 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +44,7 @@ public class OAuth2LoginSecurityConfig {
         http
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                .requestMatchers("/login").permitAll()
                                 .requestMatchers("/css/**", "/js/**", "/images/**", "/main.html").permitAll()
                                 .requestMatchers("/jaubs/ui").authenticated()
                                 .requestMatchers("/jaubs/ui/admin/**").hasAnyRole("jaubs-admin")
@@ -50,11 +53,17 @@ public class OAuth2LoginSecurityConfig {
                 )
                 .oauth2Login(oauth2 ->
                         oauth2
+                                .loginPage("/login")
                                 .userInfoEndpoint(epConfig -> epConfig.oidcUserService(this.userService()))
                                 .authorizationEndpoint(
                                         cfg -> cfg.authorizationRequestResolver(
                                                 pkceResolver(clientRegistrationRepository))))
-                .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()));
+                .oauth2Client(Customizer.withDefaults())
+                .logout(logout ->
+                        logout
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .logoutSuccessHandler(oidcLogoutSuccessHandler())
+                );
 
         return http.build();
     }

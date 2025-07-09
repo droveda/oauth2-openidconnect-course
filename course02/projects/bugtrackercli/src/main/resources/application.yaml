@@ -24,6 +24,13 @@ spring:
             authorization-grant-type: authorization_code
             # scope: openid,profile,email,bugtracker
             scope: openid,profile,email
+          gitlab-oauth:
+            provider: gitlab
+            client-name: GitLab
+            client-id: ${GITLAB_CLIENT_ID}
+            client-secret: ${GITLAB_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            scope: read_user,api,read_api
 #          gitlab-oidc:
 #            provider: gitlab
 #            client-name: GitLab
@@ -35,8 +42,8 @@ spring:
         provider:
           keycloak:
             issuer-uri: http://127.0.0.1:9090/realms/oauthrealm
-#          gitlab:
-#            issuer-uri: https://gitlab.com
+          gitlab:
+            issuer-uri: https://gitlab.com
 
 
 logging:
@@ -50,6 +57,10 @@ logging:
 bugtracker:
   api:
     url: http://localhost:8081/bugtrackerapi
+
+gitlab:
+  api:
+    url: https://gitlab.com/api/v4
 
 
 ## GitLab specific OAuth 2 related properties
