@@ -62,6 +62,11 @@ public class Oauth2LoginSecurityConfig {
                                 .authorizationEndpoint(
                                         cfg -> cfg.authorizationRequestResolver(pkceResolver(clientRegistrationRepository))
                                 ))
+
+                //The following oauth2Client method call with defaults sets up the endpoint, which is the redirect endpoint used by the gitlab.
+                //This endpoint is different from the login endpoint.
+                //The /login endpoint is for OpenID connect, whereas the /authorize endpoint is for OAuth.
+                //http://localhost:8080/authorize/oauth2/code/gitlab-oauth
                 .oauth2Client(Customizer.withDefaults())
                 .logout(logout ->
                         logout
