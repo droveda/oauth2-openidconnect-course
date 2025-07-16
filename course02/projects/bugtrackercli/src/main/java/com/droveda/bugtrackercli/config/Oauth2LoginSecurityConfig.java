@@ -91,7 +91,7 @@ public class Oauth2LoginSecurityConfig {
     this is used to enable PKCE (Proof Key for Code Exchange) in the OAuth2 authorization request.
     this way we can use it along with confidential clients in spring-boot.
      */
-    public OAuth2AuthorizationRequestResolver pkceResolver(ClientRegistrationRepository repository) {
+    private OAuth2AuthorizationRequestResolver pkceResolver(ClientRegistrationRepository repository) {
         var resolver = new DefaultOAuth2AuthorizationRequestResolver(repository, "/oauth2/authorization");
         resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce());
         return resolver;
